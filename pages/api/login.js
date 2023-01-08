@@ -1,19 +1,36 @@
 const { PrismaClient } = require('@prisma/client')
 const prisma = new PrismaClient()
-const { hidePassword } = require('../../passwordFunction')
+const { checkPassword } = require('../../passwordFunction')
+const jwt = require('jsonwebtoken');
+const cookies = require('cookies-next');
 
 
-const login = async (req,res) => {
+const key  = 'keyPassword'
+
+
+const login = async ( req,res ) => {
 
     const { username, password } = req.body
-    const sendData = await prisma.user.create({
-        data: {
-            username: username,
-            password: hidePassword(password)
-        }
+    const data = await prisma.user.findFirstOrThrow({
+        where: { username }
     })
-    res.send(sendData)
+    if ( await checkPassword( data.password, password  ) ) {
+         const payload = {
+            Username: username,
+            exp: Date.now() + 3600
+        }   
+        const token = jwt.sign( payload , key);
+        const cookie = cookies.setCookie( 'token', token, { req, res, maxAge: 60 * 6 * 24 } )
+        res.redirect(301, '/test')
+
+    } else {
+        return res.status(200).json({ message: 'Username or Password incorrect!' });
+
+    }
+
+
+   
+    res.end()
 }
  
 export default login
-  
