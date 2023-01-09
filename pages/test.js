@@ -6,6 +6,7 @@ const cookies = require('cookies-next');
 
 const key  = 'keyPassword'
 
+
 export async function getServerSideProps({ req, res }) {
     try {
         const getToken = cookies.getCookies({ req, res });
