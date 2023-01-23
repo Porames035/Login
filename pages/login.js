@@ -1,30 +1,49 @@
-import { Stack, Button, Input, InputGroup, InputRightElement, FormLabel, FormControl, FormHelperText, FormErrorMessage, Square, Flex    } from "@chakra-ui/react"
+import { Stack, Button, Input, InputGroup, InputRightElement, FormLabel, FormControl, FormHelperText, FormErrorMessage, Square, Flex, border    } from "@chakra-ui/react"
 import { useState } from "react"
-
+import { useRouter } from 'next/router'
 
 const login = () => {
-   return (
 
-    <div>
+    const router = useRouter()
+
+    function createUsername() {
+        router.push('/register')
+    }
+
+   return (
+    <div >
         <form action="/api/login" method="post">
             <Flex  h="100vh" justifyContent={"center"} alignItems={"center"}  bg={'red.50'} >
-                <Stack spacing={4}>
-                    <UsernameInput></UsernameInput>
-                    <PasswordInput></PasswordInput>
-                    <Button 
-                        mt={4}
-                        colorScheme='teal'
-                        type='submit'
-                        >
-                        Submit
-                    </Button>
-                </Stack>
+                <div>
+                    <Stack spacing={4}>
+                        <UsernameInput></UsernameInput>
+                        <PasswordInput></PasswordInput>
+                        <Stack direction='row'>
+                            <Button
+                                onClick={ createUsername }
+                                colorScheme='red'
+                                width={100}
+                                >
+                                Register
+                            </Button>
+                            <Button 
+                                colorScheme='teal'
+                                type='submit'
+                                width={100}
+                                >
+                                Sign In
+                            </Button>
+                        </Stack>
+                    </Stack>
+                </div>
             </Flex>
         </form>
     </div>
-
    )
 }
+
+
+
 
 const UsernameInput = ()  => {
     const [input, setInput] = useState('')

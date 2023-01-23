@@ -1,17 +1,19 @@
-import { AspectRatio, Box, Grid, Image, SimpleGrid } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
+import { Button, Breadcrumb,BreadcrumbItem,BreadcrumbLink } from '@chakra-ui/react'
+import useSignOut from '../useSignOut';
+const cookie = require('cookies-next');
 const jwt = require('jsonwebtoken');
-const cookies = require('cookies-next');
 
 
 const key  = 'keyPassword'
 
-
 export async function getServerSideProps({ req, res }) {
+
     try {
-        const getToken = cookies.getCookies({ req, res });
+        const getToken = cookie.getCookies({ req, res });
         const decode = jwt.verify( getToken.token, key )
-    } catch (error) {
+        return { props: {} };
+    } 
+    catch (error) {
         return {
             redirect: {
                 permanent: false,
@@ -19,47 +21,28 @@ export async function getServerSideProps({ req, res }) {
             },
         }
     }
-    return { props: {} };
 }
+
 
 export default function Home() {
 
+    const logOut = useSignOut()
+
   return (
     <div>
-        <SimpleGrid  columns={{base: 1, sm: 2, md: 3, lg: 4}}>
-  
+        <Breadcrumb spacing='8px' separator='-'>
+            <BreadcrumbItem>
+                <Button onClick={ logOut.editData } colorScheme={'green'}>Edit Account</Button>
+            </BreadcrumbItem>
 
-        <AspectRatio ratio={1} bg={'red.100'}>
-            <Image src='https://bit.ly/naruto-sage' alt='naruto' objectFit='cover' />
-        </AspectRatio>
+            <BreadcrumbItem>
+                <Button colorScheme={'yellow'}>Delete Account</Button>
+            </BreadcrumbItem>
 
-        <AspectRatio ratio={1} bg={'red.100'}>
-            <Image src='https://bit.ly/naruto-sage' alt='naruto' objectFit='cover' />
-        </AspectRatio>
-
-        <AspectRatio ratio={1} bg={'red.100'}>
-            <Image src='https://bit.ly/naruto-sage' alt='naruto' objectFit='cover' />
-        </AspectRatio>
-
-        <AspectRatio ratio={1} bg={'red.100'}>
-            <Image src='https://bit.ly/naruto-sage' alt='naruto' objectFit='cover' />
-        </AspectRatio>
-
-        <AspectRatio ratio={1} bg={'red.100'}>
-            <Image src='https://bit.ly/naruto-sage' alt='naruto' objectFit='cover' />
-        </AspectRatio>
-
-        </SimpleGrid>
-
-        <AspectRatio maxH={100} ratio={2} bg={'red.100'}>
-            <Image src='https://bit.ly/naruto-sage' alt='naruto' objectFit='cover' />
-        </AspectRatio>
-
-        <AspectRatio maxH={100} ratio={3} bg={'red.100'}>
-            <Image src='https://bit.ly/naruto-sage' alt='naruto' objectFit='cover' />
-        </AspectRatio>
-
+            <BreadcrumbItem isCurrentPage>
+                <Button onClick={ logOut.signOut } colorScheme={'red'}>Sign Out</Button>
+            </BreadcrumbItem>
+        </Breadcrumb>
     </div>
   )
-
 }
